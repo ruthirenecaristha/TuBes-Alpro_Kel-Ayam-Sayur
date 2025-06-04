@@ -539,23 +539,32 @@ func sortByCostSelection(S *tabSubs, n int) {
 }
 
 // prosedur mengurutkan langganan berdasarkan tanggal pembayaran menggunakan insertion sort
-func sortByDateInsertion(S *tabSubs, n int) {
+func sortByCostInsertion(S *tabSubs, n int) {
 	var x string
-	fmt.Print("Urutkan berdasarkan tanggal (menaik/menurun): ")
+	fmt.Print("Urutkan berdasarkan biaya (menaik/menurun): ")
 	fmt.Scan(&x)
 
 	for i := 1; i < n; i++ {
-		key := S[i]
+		temp := S[i]
 		j := i - 1
-		for j >= 0 &&
-			((x == "menaik" && S[j].paymentDate.After(key.paymentDate)) ||
-				(x == "menurun" && S[j].paymentDate.Before(key.paymentDate))) {
-			S[j+1] = S[j]
-			j--
+
+		// Menaik
+		if x == "menaik" {
+			for j >= 0 && S[j].monthlyCost > temp.monthlyCost {
+				S[j+1] = S[j]
+				j--
+			}
+		} else if x == "menurun" {
+			for j >= 0 && S[j].monthlyCost < temp.monthlyCost {
+				S[j+1] = S[j]
+				j--
+			}
 		}
-		S[j+1] = key
+
+		S[j+1] = temp
 	}
-	viewSubscriptions(S, n) // Panggil dengan pointer (S sudah pointer)
+
+	viewSubscriptions(S, n)
 }
 
 // prosedur menampilkan total pengeluaran bulanan dan rekomendasi penghematan langganan (apabila jumlah langganan > 3)
